@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Warm white, warm ink, Rosso Scuderia #ff2800.
+   Red is a fill colour here: whole tiles, the marquee, the Roost
+   section, the contact block. #ff2800 is only 3.8:1 against white,
+   so: small text ON red is black, white only for big bold type;
+   small red text on light backgrounds uses --color-red-ink.
+   ============================================================ */
+
+@theme {
+  --color-paper:    #faf8f5;
+  --color-white:    #ffffff;
+  --color-cream:    #f3efe9;
+  --color-line:     #e9e3db;
+  --color-line-hi:  #d6cec3;
+
+  --color-ink:      #1a1514;
+  --color-ink-2:    #3f3835;
+  --color-ink-3:    #5f5753;
+
+  --color-red:      #ff2800;
+  --color-red-ink:  #c41f00;
+  --color-red-pale: #ffe8e2;
+
+  --font-sans: var(--font-orbiter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-gmono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --spacing-gutter: clamp(1rem, 4vw, 3.5rem);
+
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+:root { color-scheme: light; }
+/* in the base layer, so border-colour utilities can override it */
+@layer base {
+  *, ::before, ::after { border-color: var(--color-line); }
+}
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss03" on, "cv05" on;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection { background: var(--color-red); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--color-red);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---- type ---- */
+
+.mega {
+  font-weight: 800;
+  font-size: clamp(3.1rem, 10.5vw, 10.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.058em;
+}
+
+.big {
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5.6vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.lede {
+  font-weight: 500;
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+  color: var(--color-ink-2);
+  text-wrap: pretty;
+}
+
+.body { font-weight: 500; font-size: 0.9375rem; line-height: 1.6; color: var(--color-ink-2); text-wrap: pretty; }
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+
+.ulink {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+  transition: text-decoration-color 0.2s;
+}
+.ulink:hover { text-decoration-color: currentColor; }
+
+/* ---- marquee ---- */
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ---- tile loops: cheap CSS. A tile only animates while someone is looking
+   at it (hover/focus, or centred on screen on touch devices). Otherwise the
+   animation is removed and the art shows its finished, resting picture. ---- */
+
+.loop:not([data-live="true"]) * { animation: none !important; }
+
+@keyframes blink   { 50% { opacity: 0; } }
+@keyframes ping    { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+@keyframes eq      { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+@keyframes scan    { 0% { transform: translateY(-10%); } 100% { transform: translateY(1000%); } }
+@keyframes rise    { 0% { transform: translateY(14px); opacity: 0; } 15%, 80% { transform: none; opacity: 1; } 100% { opacity: 0; } }
+@keyframes travel  { 0% { offset-distance: 0%; opacity: 0; } 10%, 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+@keyframes draw    { 0% { stroke-dashoffset: var(--len); } 60%, 100% { stroke-dashoffset: 0; } }
+@keyframes snap    { 0%, 20% { transform: scale(1.35); opacity: 0; } 35%, 85% { transform: scale(1); opacity: 1; } 100% { opacity: 0; } }
+@keyframes roll    { 0% { transform: translateY(-83.333%); } 30%, 88% { transform: translateY(0); } 100% { transform: translateY(-83.333%); } }
+@keyframes spin    { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+}
